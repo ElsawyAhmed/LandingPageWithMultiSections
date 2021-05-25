@@ -1,27 +1,14 @@
-/**
- * 
- * Manipulating the DOM exercise.
- * Exercise programmatically builds navigation,
- * scrolls to anchors from navigation,
- * and highlights section in viewport upon scrolling.
- * 
- * Dependencies: None
- * 
- * JS Version: ES2015/ES6
- * 
- * JS Standard: ESlint
- * 
-*/
 
 /**
  * Define Global Variables
  * 
 */
 
-const sec = Array.from(document.querySelectorAll('section'));
-console.log(sec)
+const sec = document.querySelectorAll('section');
+// console.log(sec)
+console.log(document.querySelectorAll('section')[0])
 const nav = document.getElementById('navbar__items');
-console.log(nav)
+// console.log(nav)
 let navItemsNumber = sec.length;
 
 /**
@@ -29,34 +16,30 @@ let navItemsNumber = sec.length;
  * Start Helper Functions
  * 
 */
-function createNavItems(){
-    i = 0
-    for (section of sec){
-        section_title = section.getAttribute('sec_name')
-        section_link = section.getAttribute('id')
+ createNavItems = () =>{
     
+    for (i = 0; i<sec.length; i++){
+        section_title = sec[i].getAttribute('sec_name')
+        console.log("section title", section_title)
+        section_link = sec[i].getAttribute('id')
         // Create Items to Be Appended to the Nav Bar
         section_item = document.createElement('li')        
-        section_item.innerHTML = `<a class ='section_link' id="nav_item_${i++}" href = '#${section_link}' >${section_title}<a>`
+        section_item.innerHTML = `<a class ='section_link' id="nav_item_${i}" href = '#${section_link}' >${section_title}<a>`
         // Append Dynamically Nav Bar Items
         nav.appendChild(section_item)
-
-    
     }
 }
 
-function sectionInView_port(elem){
-    let sectionPosition = elem.getBoundingClientRect();
-    console.log(sectionPosition)
-    return (sectionPosition.top>=0);
+activeSection = (section) =>{
+    let sectionPosition = section.getBoundingClientRect();
+    return (sectionPosition.top<=100);
 }
 
 function toggleActive(){
    for (section of sec){
-       if(sectionInView_port(section)){
+       if(activeSection(section)){
            if(! section.classList.contains('active')){
                section.classList.add('active')
-               console.log(section)
            }       
         }
        else{
