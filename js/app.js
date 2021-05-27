@@ -4,40 +4,45 @@
  * 
 */
 
-const sec = document.querySelectorAll('section');
-// console.log(sec)
-console.log(document.querySelectorAll('section')[0])
+const sec = document.getElementsByClassName('nav_item');
 const nav = document.getElementById('navbar__items');
-// console.log(nav)
-let navItemsNumber = sec.length;
+
 
 /**
  * End Global Variables
  * Start Helper Functions
  * 
 */
- createNavItems = () =>{
-    
-    for (i = 0; i<sec.length; i++){
-        section_title = sec[i].getAttribute('sec_name')
-        console.log("section title", section_title)
-        section_link = sec[i].getAttribute('id')
-        // Create Items to Be Appended to the Nav Bar
-        section_item = document.createElement('li')        
-        section_item.innerHTML = `<a class ='section_link' id="nav_item_${i}" href = '#${section_link}' >${section_title}<a>`
-        // Append Dynamically Nav Bar Items
-        nav.appendChild(section_item)
+
+
+// firstly convert all sections into array of objects
+convertSectionsIntoObjects = (sections)=>{
+    var navObjects = []
+    for (section of sections){
+        let  sectionObj = {
+            'name' : section.getAttribute('sec_name'),
+            'id' : section.getAttribute('id')
     }
+    navObjects.push(sectionObj)
+    }
+    return navObjects;
 }
 
-activeSection = (section) =>{
-    let sectionPosition = section.getBoundingClientRect();
-    return (sectionPosition.top<=100);
+// map this array of objects into nav items and append them to the nav bar
+ createNavItems = (items) =>{
+    
+    items.map((item, index )=>{
+        let newItem = document.createElement('li')
+        newItem.innerHTML = `<a href='#${item.id}' class=${item.id}  id="nav_item_${index}">${item.name}</a>`
+        nav.appendChild(newItem)
+    })
 }
 
-function toggleActive(){
+// implementing the functionality of deciding which section is to be active
+function activateMe(){
    for (section of sec){
-       if(activeSection(section)){
+        let sectionPosition = section.getBoundingClientRect();
+       if(sectionPosition.top<=100){
            if(! section.classList.contains('active')){
                section.classList.add('active')
            }       
@@ -45,12 +50,8 @@ function toggleActive(){
        else{
         section.classList.remove('active')
     }
-
-   }
-    
+   } 
 }
-
-
 
 /**
  * End Helper Functions
@@ -59,11 +60,12 @@ function toggleActive(){
 */
 
 // build the nav
-createNavItems()
+navItems = convertSectionsIntoObjects(sec)
+createNavItems(navItems)
 
 // Add class 'active' to section when near top of viewport
 
-document.addEventListener('scroll', toggleActive)
+document.addEventListener('scroll', activateMe)
 // Scroll to anchor ID using scrollTO event
 
 
